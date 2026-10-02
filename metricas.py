@@ -12,20 +12,27 @@ def analisar(caminho):
     total = len(linhas)
     comentarios = 0
     codigo = 0
+    em_branco = 0
 
     for linha in linhas:
         texto = linha.strip()
-        if texto.startswith("#"):
+        if not texto:
+            em_branco += 1
+        elif texto.startswith("#"):
             comentarios += 1
         else:
             codigo += 1
 
-    densidade = (comentarios / total * 100) if total else 0.0
+    # A densidade compara comentarios com o conteudo util do arquivo,
+    # entao as linhas em branco ficam de fora do denominador.
+    uteis = codigo + comentarios
+    densidade = (comentarios / uteis * 100) if uteis else 0.0
 
     return {
         "total": total,
         "codigo": codigo,
         "comentarios": comentarios,
+        "em_branco": em_branco,
         "densidade": densidade,
     }
 
@@ -41,6 +48,7 @@ def main():
     print(f"Total de linhas:        {resultado['total']}")
     print(f"Linhas de codigo:       {resultado['codigo']}")
     print(f"Linhas de comentario:   {resultado['comentarios']}")
+    print(f"Linhas em branco:       {resultado['em_branco']}")
     print(f"Densidade de comentario: {resultado['densidade']:.1f}%")
 
 
